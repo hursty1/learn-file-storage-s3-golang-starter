@@ -82,6 +82,7 @@ func (cfg *apiConfig) handlerVideoMetaDelete(w http.ResponseWriter, r *http.Requ
 }
 
 func (cfg *apiConfig) handlerVideoGet(w http.ResponseWriter, r *http.Request) {
+	// fmt.Println("GET")
 	videoIDString := r.PathValue("videoID")
 	videoID, err := uuid.Parse(videoIDString)
 	if err != nil {
@@ -94,11 +95,18 @@ func (cfg *apiConfig) handlerVideoGet(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusNotFound, "Couldn't get video", err)
 		return
 	}
-
+	
+	// video_signed, err := cfg.dbVideoToSignedVideo(video)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	// respondWithError(w, http.StatusInternalServerError, "Couldn't update video", err)
+	// 	// return
+	// }
 	respondWithJSON(w, http.StatusOK, video)
 }
 
 func (cfg *apiConfig) handlerVideosRetrieve(w http.ResponseWriter, r *http.Request) {
+	// fmt.Println("Retrieve")
 	token, err := auth.GetBearerToken(r.Header)
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, "Couldn't find JWT", err)
@@ -115,6 +123,16 @@ func (cfg *apiConfig) handlerVideosRetrieve(w http.ResponseWriter, r *http.Reque
 		respondWithError(w, http.StatusInternalServerError, "Couldn't retrieve videos", err)
 		return
 	}
+	// signedVideos := make([]database.Video, 0, len(videos)) // pre-allocate
 
+	// for _, video := range videos {
+	// 	signed, err := cfg.dbVideoToSignedVideo(video)
+	// 	if err != nil {
+	// 		// respondWithError(w, http.StatusInternalServerError, "Couldn't retrieve signed videos", err)
+	// 		fmt.Printf("Skipping Video %v\n", err)
+	// 		continue
+	// 	}
+	// 	signedVideos = append(signedVideos, signed)
+	// }
 	respondWithJSON(w, http.StatusOK, videos)
 }
